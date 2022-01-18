@@ -43,6 +43,11 @@
     color: #fafafa;
     font-weight: 700;
     font-size: 150px;
+    transition: all 100ms;
+    cursor: pointer;
+  }
+  .clock:hover {
+    color: #e0e0e0;
   }
 </style>
 
@@ -79,8 +84,6 @@
 
     let elapsed = now.getTime() - inputDate.getTime()
 
-    console.log({ day, month, time, elapsed })
-
     let elapsedHours = Math.floor(elapsed / (1000 * 60 * 60))
     let elapsedMinutes = Math.floor(elapsed / (1000 * 60)) - elapsedHours * 60
     let display = document.querySelector(".clock")
@@ -101,7 +104,7 @@
       <input id="time" type="text" placeholder="HH:mm">
       <button type="submit">Lessgo</button>
     </form>
-    <div class="clock">
+    <div class="clock" onclick="lessGo()">
       00:00
     </div>
   </div>
