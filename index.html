@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="favicon.svg" type="image/x-icon">
+  <title>Hour</title>
+</head>
+
+<style>
+  * {
+    font-family: Arial, Helvetica, sans-serif !important;
+  }
+
+  body {
+    min-height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .input {
+    display: flex;
+  }
+
+  input {
+    margin-right: 8px;
+    width: 20px;
+  }
+
+  input:last-of-type {
+    width: 50px;
+  }
+
+  input:active,
+  input:focus {
+    outline: none;
+  }
+
+  .clock {
+    color: #fafafa;
+    font-weight: 700;
+    font-size: 150px;
+  }
+</style>
+
+<script>
+  function onMount() {
+    let wakeTime = localStorage.getItem('wakeTime')
+    if (wakeTime) {
+      wakeTime = JSON.parse(wakeTime)
+      let { day, month, time } = wakeTime
+      document.querySelector('#day').value = day
+      document.querySelector('#month').value = month
+      document.querySelector('#time').value = time
+      lessGo()
+    }
+  }
+
+  function lessGo() {
+
+    let day = document.querySelector("#day").value
+    let month = document.querySelector("#month").value
+    let time = document.querySelector("#time").value
+
+
+    if ([day, month, time].includes("")) return;
+
+    localStorage.setItem('wakeTime', JSON.stringify({ day, month, time }))
+
+    day = parseInt(day)
+    month = parseInt(month)
+    time = time.split(':')
+
+    let now = new Date()
+    let inputDate = new Date(now.getFullYear(), month - 1, day, parseInt(time[0]), parseInt(time[1]))
+
+    let elapsed = now.getTime() - inputDate.getTime()
+
+    console.log({ day, month, time, elapsed })
+
+    let elapsedHours = Math.floor(elapsed / (1000 * 60 * 60))
+    let elapsedMinutes = Math.floor(elapsed / (1000 * 60)) - elapsedHours * 60
+    let display = document.querySelector(".clock")
+    display.textContent = `${elapsedHours}:${addLeadingZero(elapsedMinutes)}`
+
+  }
+
+  function addLeadingZero(number) {
+    return number < 10 ? '0' + number : number
+  }
+</script>
+
+<body bgcolor="#121212" onload="onMount()">
+  <div>
+    <form autocomplete="off" class="input" onsubmit="event.preventDefault(); return lessGo();">
+      <input id="day" type="text" placeholder="D">
+      <input id="month" type="text" placeholder="M">
+      <input id="time" type="text" placeholder="HH:mm">
+      <button type="submit">Lessgo</button>
+    </form>
+    <div class="clock">
+      00:00
+    </div>
+  </div>
+</body>
+
+</html>
